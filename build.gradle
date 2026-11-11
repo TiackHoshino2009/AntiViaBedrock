@@ -1,0 +1,79 @@
+plugins {
+    id 'java'
+}
+
+group = 'me.khangios'
+
+// Auto-increment version on every build
+def versionFile = file('version.properties')
+def Properties versionProps = new Properties()
+if (versionFile.exists()) {
+    versionFile.withReader { versionProps.load(it) }
+} else {
+    versionProps.setProperty('version.major', '1')
+    versionProps.setProperty('version.minor', '0')
+    versionProps.setProperty('version.patch', '0')
+}
+
+def isBuildTask = gradle.startParameter.taskNames.any { 
+    it.contains('build') || it.contains('jar') || it.contains('assemble') 
+}
+
+if (isBuildTask) {
+    def nextPatch = versionProps.getProperty('version.patch', '0').toInteger() + 1
+    versionProps.setProperty('version.patch', nextPatch.toString())
+    versionFile.withWriter { versionProps.store(it, 'AntiViaBedrock Version Properties') }
+}
+
+def major = versionProps.getProperty('version.major', '1')
+def minor = versionProps.getProperty('version.minor', '0')
+def patch = versionProps.getProperty('version.patch', '0')
+version = "${major}.${minor}.${patch}"
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'papermc'
+        url = 'https://repo.papermc.io/repository/maven-public/'
+    }
+    maven {
+        name = 'opencollab-snapshots'
+        url = 'https://repo.opencollab.dev/maven-snapshots/'
+    }
+    maven {
+        name = 'opencollab-releases'
+        url = 'https://repo.opencollab.dev/maven-releases/'
+    }
+}
+
+dependencies {
+    compileOnly 'io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT'
+    compileOnly 'org.geysermc.floodgate:api:2.2.3-SNAPSHOT'
+    compileOnly 'org.geysermc.geyser:api:2.4.2-SNAPSHOT'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+processResources {
+    def props = [version: project.version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}
+
+jar {
+    archiveBaseName.set('AntiViaBedrock')
+    archiveVersion.set(project.version.toString())
+}
+
+

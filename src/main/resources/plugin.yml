@@ -1,0 +1,28 @@
+name: AntiViaBedrock
+version: '${version}'
+main: me.tiack2k9.antiviabedrock.AntiViaBedrockPlugin
+api-version: '1.21'
+author: Tiack
+description: Anti-ViaBedrock and Anti-ViaFabricPlus spoof protection for 1.21.11 by Tiack.
+softdepend:
+  - floodgate
+  - Geyser-Spigot
+
+permissions:
+  antiviabedrock.admin:
+    description: Allows administrative access to AntiViaBedrock
+    default: op
+  antiviabedrock.alerts:
+    description: Receive detection alerts when a fake Bedrock player is caught
+    default: op
+  antiviabedrock.bypass:
+    description: Bypass AntiViaBedrock checks
+    default: false
+
+commands:
+  antiviabedrock:
+    description: AntiViaBedrock management command
+    permission: antiviabedrock.admin
+    aliases:
+      - avb
+      - antiviabedrock

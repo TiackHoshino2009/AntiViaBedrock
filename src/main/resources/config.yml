@@ -1,0 +1,81 @@
+# ===================================================================
+#                      AntiViaBedrock by Tiack2k9
+#   Bảo vệ máy chủ Leaf 1.21.11 khỏi ViaBedrock & ViaFabricPlus
+# ===================================================================
+
+# Các tính năng phát hiện ViaBedrock (Port fake Bedrock qua Geyser/Floodgate)
+detection:
+  # Phát hiện chuỗi DeviceModel độc quyền của ViaBedrock ("MS-7E51 Micro-Star International Co., Ltd. (Unknown)")
+  check-device-model: true
+
+  # Phát hiện hệ điều hành DeviceOS là Win32 (ID 8) thay vì UWP / Windows 10 (ID 7)
+  # Bản Bedrock Windows chính thức luôn chạy trên nền tảng UWP (ID 7). ViaBedrock gửi ID 8 (Win32).
+  check-device-os-win32: true
+
+  # Phát hiện XUID giả mạo tự ký bằng thuật toán FNV1-64 của ViaBedrock
+  check-fake-fnv1-xuid: true
+
+  # Phát hiện tầm nhìn giả mạo 96 chunk (MaxViewDistance = 96 hardcoded trong ViaBedrock)
+  check-max-view-distance: true
+
+  # Phát hiện GuiScale bất thường (-1 hardcoded trong ViaBedrock)
+  check-gui-scale: true
+
+  # Phát hiện kênh mod ViaBedrock Utility ("viabedrockutility:confirm", "viabedrockutility:data")
+  check-viabedrock-channels: true
+
+# Các tính năng phát hiện ViaFabricPlus khi join trực tiếp qua cổng Java
+java-detection:
+  # Kiểm tra client brand nếu người chơi gửi brand Fabric/ViaFabricPlus
+  check-client-brand: true
+  
+  # Danh sách từ khóa brand bị cấm
+  blocked-brands:
+    - "viafabricplus"
+    - "fabric"
+
+# Hệ thống xử lý vi phạm:
+# - Lần 1: Kick với thông báo yêu cầu dùng bản Bedrock chính thức
+# - Lần 2: Ban vĩnh viễn hoặc theo lệnh cấu hình
+punishment:
+  # Bật tính năng ban ở lần vi phạm thứ 2 (false = chỉ kick liên tục)
+  ban-on-second-offense: true
+
+  # Thông báo kick ở lần 1 (Có thể dùng mã màu & hoặc §)
+  kick-message: |
+    &c[Anti-ViaBedrock] &fVui lòng dùng bản Bedrock chính thức!
+    &eBạn bị phát hiện sử dụng ViaBedrock / ViaFabricPlus để fake Bedrock.
+    &c&lCẢNH BÁO: &fNếu bạn cố tình kết nối lại lần 2, bạn sẽ bị &c&lBAN VĨNH VIỄN!
+
+  # Thông báo khi bị ban ở lần 2
+  ban-message: |
+    &c[Anti-ViaBedrock] &fBạn đã bị cấm khỏi máy chủ!
+    &eLý do: &fTái phạm kết nối bằng ViaFabricPlus/ViaBedrock (Fake Bedrock Bypass).
+
+  # Cách thức ban:
+  # - BUILTIN: Dùng trực tiếp BanList của Minecraft Paper/Leaf (an toàn, không phụ thuộc plugin khác)
+  # - COMMAND: Chạy lệnh tùy chỉnh dưới console (ví dụ: ban, tempban, cban, litebans, etc.)
+  ban-method: "BUILTIN"
+
+  # Nếu chọn ban-method là "COMMAND", lệnh dưới đây sẽ được thực thi:
+  # Placeholder: %player%, %reason%, %ip%
+  ban-command: "ban %player% [Anti-ViaBedrock] Fake Bedrock Bypass (Lần 2)"
+
+  # Thời gian ban (nếu dùng BUILTIN): để 0 hoặc "permanent" là vĩnh viễn, hoặc số ngày (ví dụ: 30d, 7d)
+  ban-duration: "permanent"
+
+# Thông báo cho Quản Trị Viên (Staff / Admin)
+notifications:
+  # Thông báo trong game cho người có quyền antiviabedrock.alerts
+  notify-admins: true
+  admin-alert-format: |
+    &8[&cAntiViaBedrock&8] &ePhát hiện nghi vấn: &c%player%
+    &7- Phương thức: &f%type%
+    &7- Chi tiết: &f%details%
+    &7- Lần vi phạm: &c%violation% &7(Hành động: &e%action%&7)
+
+  # Gửi log ra Console
+  log-to-console: true
+
+  # Discord Webhook (Để trống "" nếu không dùng)
+  discord-webhook-url: ""
