@@ -1,6 +1,6 @@
 name: AntiViaBedrock
 version: '${version}'
-main: me.tiack2k9.antiviabedrock.AntiViaBedrockPlugin
+main: me.khangios.antiviabedrock.AntiViaBedrockPlugin
 api-version: '1.21'
 author: Tiack
 description: Anti-ViaBedrock and Anti-ViaFabricPlus spoof protection for 1.21.11 by Tiack.
