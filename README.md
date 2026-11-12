@@ -1,99 +1,98 @@
 # 🛡️ AntiViaBedrock by Tiack
 
-Plugin chống gian lận chuyên dụng dành cho máy chủ **Minecraft 1.21.11 Leaf** (Winds-Studio/Leaf), ngăn chặn triệt để người chơi sử dụng **ViaFabricPlus** hoặc module **ViaBedrock** để giả mạo client Bedrock (port qua Geyser/Floodgate) nhằm bay lượn (fly), bypass anti-cheat và raid base.
+A specialized anti-cheat plugin for **Minecraft 1.21.11** servers (Winds-Studio/Leaf). It aims to prevent players from using **ViaFabricPlus** or the **ViaBedrock** module to spoof a Bedrock client (connecting through Geyser/Floodgate) to fly, bypass anti-cheat checks, or raid bases.
 
 ---
 
-## 🔍 1. Phân Tích Kỹ Thuật: Cách ViaBedrock & ViaFabricPlus Giả Mạo Bedrock
+## 🔍 1. Technical Analysis: How ViaBedrock and ViaFabricPlus Spoof Bedrock
 
-Từ mã nguồn giải mã của `ViaFabricPlus` và `ViaBedrock`:
+Based on the decompiled source code of `ViaFabricPlus` and `ViaBedrock`:
 
-### A. Chuỗi phần cứng bị hardcode (`DeviceModel`)
-* Trong file `SkinProvider.java` (dòng 98) của ViaBedrock:
+### A. Hardcoded hardware string (`DeviceModel`)
+* In `ViaBedrock`’s `SkinProvider.java` (line 98):
   ```java
   claims.put("DeviceModel", "MS-7E51 Micro-Star International Co., Ltd. (Unknown)");
   ```
-  Tác giả ViaBedrock (RaphiMC) đã hardcode cố định model bo mạch chủ của máy cá nhân (`MS-7E51`). Mọi client ViaFabricPlus/ViaBedrock chưa qua chỉnh sửa sâu đều gửi chuỗi này trong ClientData JWT.
+  The ViaBedrock author (RaphiMC) hardcoded a motherboard model from their personal computer (`MS-7E51`). All unmodified ViaFabricPlus/ViaBedrock clients send this string in the ClientData JWT.
 
-### B. Giả lập nền tảng sai lệch (`DeviceOS = Win32`)
-* Trong `SkinProvider.java` (dòng 99):
+### B. Incorrectly simulated platform (`DeviceOS = Win32`)
+* In `SkinProvider.java` (line 99):
   ```java
   claims.put("DeviceOS", BuildPlatform.Win32.getValue()); // ID 8
   ```
-  Game thủ Minecraft Bedrock trên Windows chính thức (Microsoft Store) **luôn luôn** chạy trên nền tảng **UWP / Windows 10 (ID 7)**. Nền tảng Win32 (ID 8) là bản thử nghiệm cổ xưa không tồn tại trong phiên bản bán lẻ chính thức. Do đó mọi kết nối Bedrock báo `Win32 (ID 8)` đều là client giả lập/ViaBedrock.
+  The official Minecraft Bedrock game on Windows (Microsoft Store) **always** runs on the **UWP / Windows 10 platform (ID 7)**. Win32 (ID 8) is an old, experimental platform that does not exist in the official retail release. Therefore, any Bedrock connection reporting `Win32 (ID 8)` is an emulated client/ViaBedrock.
 
-### C. Tầm nhìn phi thực tế (`MaxViewDistance = 96`)
-* Trong `SkinProvider.java` (dòng 105):
+### C. Unrealistic view distance (`MaxViewDistance = 96`)
+* In `SkinProvider.java` (line 105):
   ```java
   claims.put("MaxViewDistance", 96);
   ```
-  Game Bedrock thông thường chỉ hỗ trợ slider tối đa 16-72 chunk (tối đa 80 trên GPU cao cấp). Việc gửi 96 chunk là chữ ký nhận diện 100% của ViaBedrock.
+  Typical Bedrock clients support a view-distance slider of only 16–72 chunks (up to 80 on high-end GPUs). Sending 96 chunks is a 100% identifying signature of ViaBedrock.
 
-### D. Tỷ lệ giao diện bất thường (`GuiScale = -1`)
-* Trong `SkinProvider.java` (dòng 89):
+### D. Unusual interface scale (`GuiScale = -1`)
+* In `SkinProvider.java` (line 89):
   ```java
   claims.put("GuiScale", -1);
   ```
-  Bedrock vanilla không bao giờ gửi giá trị âm cho GuiScale.
+  Vanilla Bedrock never sends a negative `GuiScale` value.
 
-### E. Thuật toán tạo XUID offline (`FNV1-64 Hash`)
-* Trong `LoginPackets.java` (dòng 140-141):
+### E. Offline XUID generation algorithm (`FNV1-64 Hash`)
+* In `LoginPackets.java` (lines 140–141):
   ```java
   final long rawXuid = Fnv1.fnv1_64(javaUsername.getBytes(StandardCharsets.UTF_8));
   final String xuid = String.valueOf(Math.abs(rawXuid));
   ```
-  Khi người chơi dùng ViaBedrock chế độ offline/cracked (đa số cheater), XUID gửi lên server chính là giá trị tuyệt đối của mã băm FNV1-64 từ tên Java của họ.
+  When a player uses ViaBedrock in offline/cracked mode (as many cheaters do), the XUID sent to the server is the absolute value of the FNV1-64 hash of their Java username.
 
-### F. Cách ViaFabricPlus vượt qua Anti-ViaFabricPlus thông thường trên cổng Java
-* Trong `ViaFabricPlusProtocol.java` (dòng 64):
-  ViaFabricPlus chủ động loại bỏ kênh `fabric:extended_game_state_particle_effect_sync` khỏi gói tin `minecraft:register` để che giấu dấu vết Fabric.
-* Hackers chuyển sang cổng Bedrock để anti-cheat tưởng là Bedrock player và nới lỏng kiểm tra chuyển động (fly, speed, no-clip).
-
----
-
-## ⚡ 2. Cơ Chế Xử Phạt Của AntiViaBedrock
-
-* **Lần 1:** Kick người chơi ngay tại `AsyncPlayerPreLoginEvent` với thông báo:
-  > *"Vui lòng dùng bản Bedrock chính thức để tham gia server! (Cảnh cáo: Nếu tái phạm lần 2 sẽ bị cấm vĩnh viễn)"*
-* **Lần 2:** **BAN** người chơi vĩnh viễn (hoặc theo lệnh cấu hình) và lưu trữ trạng thái vào cơ sở dữ liệu `data.yml`.
-* **Cảnh báo Staff:** Thông báo tức thì cho các Admin/Staff có quyền `antiviabedrock.alerts`.
-* **Hỗ trợ Discord Webhook:** Gửi embed cảnh báo trực tiếp về kênh Discord quản trị.
+### F. How ViaFabricPlus bypasses ordinary anti-ViaFabricPlus checks on the Java port
+* In `ViaFabricPlusProtocol.java` (line 64), ViaFabricPlus deliberately removes the `fabric:extended_game_state_particle_effect_sync` channel from the `minecraft:register` packet to hide traces of Fabric.
+* Hackers switch to the Bedrock port so the anti-cheat treats them as Bedrock players and relaxes movement checks (fly, speed, no-clip).
 
 ---
 
-## 🛠️ 3. Tự Động Tăng Phiên Bản Khi Build (`x.x.x`)
+## ⚡ 2. AntiViaBedrock Enforcement Mechanism
 
-Mỗi khi chạy lệnh build Gradle:
+* **First offense:** Kicks the player during `AsyncPlayerPreLoginEvent` with this message:
+  > *“Please use the official Bedrock version to join the server! (Warning: A second offense will result in a permanent ban.)”*
+* **Second offense:** **Bans** the player permanently (or according to the configured command) and stores the status in the `data.yml` database.
+* **Staff alerts:** Immediately notifies admins/staff with the `antiviabedrock.alerts` permission.
+* **Discord webhook support:** Sends an alert embed directly to the staff Discord channel.
+
+---
+
+## 🛠️ 3. Automatically Incrementing the Version When Building (`x.x.x`)
+
+Each time you run a Gradle build command:
 ```bash
 gradle jar
 ```
-hoặc
+or
 ```bash
 gradlew.bat jar
 ```
-Build script sẽ:
-1. Đọc file `version.properties`.
-2. Tự động tăng `version.patch` lên 1 (ví dụ: `1.0.0` ➔ `1.0.1` ➔ `1.0.2`...).
-3. Cập nhật `version` trong `plugin.yml` và tạo file jar mới tương ứng (ví dụ: `AntiViaBedrock-1.0.3.jar`).
+the build script will:
+1. Read `version.properties`.
+2. Automatically increment `version.patch` by 1 (for example, `1.0.0` ➔ `1.0.1` ➔ `1.0.2`...).
+3. Update the `version` in `plugin.yml` and create the corresponding JAR file (for example, `AntiViaBedrock-1.0.3.jar`).
 
 ---
 
-## 📌 4. Lệnh & Quyền Hạn
+## 📌 4. Commands and Permissions
 
-| Lệnh | Quyền | Mô tả |
+| Command | Permission | Description |
 | :--- | :--- | :--- |
-| `/avb reload` | `antiviabedrock.admin` | Nạp lại file `config.yml` và `data.yml` |
-| `/avb check <player>` | `antiviabedrock.admin` | Kiểm tra Device OS, Model, XUID, Brand của người chơi |
-| `/avb reset <player>` | `antiviabedrock.admin` | Xóa lịch sử vi phạm / ân xá cho người chơi |
-| `/avb list` | `antiviabedrock.admin` | Xem danh sách các đối tượng đã bị ghi nhận vi phạm |
+| `/avb reload` | `antiviabedrock.admin` | Reloads `config.yml` and `data.yml` |
+| `/avb check <player>` | `antiviabedrock.admin` | Checks the player’s DeviceOS, DeviceModel, XUID, and brand |
+| `/avb reset <player>` | `antiviabedrock.admin` | Clears the player’s violation history / pardons the player |
+| `/avb list` | `antiviabedrock.admin` | Shows the list of players recorded as having violated the rules |
 
-* `antiviabedrock.alerts`: Nhận thông báo khi phát hiện cheater cố tình kết nối fake Bedrock.
-* `antiviabedrock.bypass`: Bỏ qua kiểm tra (dành cho Admin test).
+* `antiviabedrock.alerts`: Receives alerts when a suspected cheater attempts to connect using a spoofed Bedrock client.
+* `antiviabedrock.bypass`: Bypasses checks (for admin testing).
 
 ---
 
-## 📁 5. Cài Đặt
+## 📁 5. Installation
 
-1. Copy file `AntiViaBedrock-x.x.x.jar` trong thư mục `build/libs/` vào thư mục `plugins/`
-2. Khởi động lại máy chủ (Server có cài `Floodgate` và/hoặc `Geyser-Spigot`).
-3. Tùy chỉnh thông báo và hành động trong `plugins/AntiViaBedrock/config.yml` nếu muốn.
+1. Copy `AntiViaBedrock-x.x.x.jar` from the `build/libs/` folder into the `plugins/` folder.
+2. Restart the server (which should have `Floodgate` and/or `Geyser-Spigot` installed).
+3. If desired, customize messages and actions in `plugins/AntiViaBedrock/config.yml`.
