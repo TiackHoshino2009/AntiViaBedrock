@@ -1,9 +1,9 @@
-package me.khangios.antiviabedrock.detector;
+package me.tiack2k9.antiviabedrock.detector;
 
 /**
  * Kết quả phân tích và kiểm tra người chơi.
  * 
- * @author khangios
+ * @author tiack2k9
  */
 public record DetectionResult(
     boolean detected,
@@ -11,7 +11,7 @@ public record DetectionResult(
     String details
 ) {
     public static DetectionResult clean() {
-        return new DetectionResult(false, null, "Hợp lệ (Clean Bedrock Client)");
+        return new DetectionResult(false, null, "Valid (Clean Bedrock Client)");
     }
 
     public static DetectionResult flagged(DetectionType type, String details) {

@@ -1,0 +1,77 @@
+#AntiViaBedRock By Tiack
+
+# ViaBedrock detection features (Port fake Bedrock qua Geyser/Floodgate)
+detection:
+  # Detect ViaBedrock’s proprietary DeviceModel string ("MS-7E51 Micro-Star International Co., Ltd. (Unknown)")
+  check-device-model: true
+
+  # Detects the DeviceOS as Win32 (ID 8) instead of UWP / Windows 10 (ID 7)
+  # The official Bedrock Windows version always runs on the UWP platform (ID 7). ViaBedrock sends ID 8 (Win32).
+  check-device-os-win32: true
+
+# Detects ViaBedrock’s spoofed, self-signed XUID using the FNV1-64 algorithm
+  check-fake-fnv1-xuid: true
+
+  # Detects the spoofed 96-chunk view distance (MaxViewDistance = 96 is hardcoded in ViaBedrock)
+  check-max-view-distance: true
+
+  # Detects the unusual GuiScale value (-1 is hardcoded in ViaBedrock)
+  check-gui-scale: true
+
+  # Detects ViaBedrock Utility mod channels ("viabedrockutility:confirm", "viabedrockutility:data")
+  check-viabedrock-channels: true
+
+# ViaFabricPlus detection features when joining directly through the Java port
+java-detection:
+# Checks the client brand if the player sends a ViaFabricPlus brand
+  check-client-brand: true
+  # List of banned brand keywords
+  blocked-brands:
+    - "viafabricplus"
+
+# Violation handling system:
+# - First offense: Kick with a message asking the player to use the official Bedrock version
+# - Second offense: Permanent ban or ban according to the configured command
+
+punishment:
+# Enable a ban on the second offense (false = keep kicking the player)
+  ban-on-second-offense: true
+
+# Kick message for the first offense (supports & or § color codes)
+  kick-message: |
+    &c[Anti-ViaBedrock] &fPlease use the official Bedrock version!
+    &eYou were detected using ViaBedrock / ViaFabricPlus to spoof Bedrock.
+    &c&lWARNING: &fIf you deliberately reconnect a second time, you will be &c&lPERMANENTLY BANNED!
+
+  # Thông báo khi bị ban ở lần 2
+  ban-message: |
+    &c[Anti-ViaBedrock] &fYou have been banned from the server!
+    &eReason: &fRepeatedly reconnecting using ViaFabricPlus/ViaBedrock (Bedrock spoofing bypass).
+
+# Ban method:
+# - BUILTIN: Uses Minecraft Paper/Leaf's BanList directly (safe; no dependency on other plugins)
+# - COMMAND: Runs a custom command from the console (e.g., ban, tempban, cban, LiteBans, etc.)
+  ban-method: "BUILTIN"
+
+# If the ban-method is set to "COMMAND", the command below will be executed:
+# Placeholders: %player%, %reason%, %ip%
+  ban-command: "ban %player% [Anti-ViaBedrock] Fake Bedrock Bypass"
+
+# Ban duration (when using BUILTIN): set to 0 or "permanent" for a permanent ban, or specify a number of days (e.g., 30d, 7d)
+  ban-duration: "permanent"
+
+# Notification for staff / admins
+notifications:
+# In-game notification for players with the antiviabedrock.alerts permission
+  notify-admins: true
+  admin-alert-format: |
+    &8[&cAntiViaBedrock&8] &eSuspicious activity detected: &c%player%
+    &7- Method: &f%type%
+    &7- &7- Details: &f%details%
+    &7- Violation: &c%violation% &7(Action: &e%action%&7)
+
+  # Send the log to the console
+  log-to-console: true
+
+  # Discord Webhook (Leave blank "" if unused.)
+  discord-webhook-url: ""

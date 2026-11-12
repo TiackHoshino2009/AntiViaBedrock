@@ -1,11 +1,11 @@
-package me.khangios.antiviabedrock.util;
+package me.tiack2k9.antiviabedrock.util;
 
 import org.bukkit.ChatColor;
 
 /**
  * Tiện ích chuyển đổi mã màu chat cho thông báo.
  * 
- * @author khangios
+ * @author tiack2k9
  */
 public final class ColorUtil {
 

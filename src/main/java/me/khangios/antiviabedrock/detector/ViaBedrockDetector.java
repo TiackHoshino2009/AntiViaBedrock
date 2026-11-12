@@ -1,8 +1,8 @@
-package me.khangios.antiviabedrock.detector;
+package me.tiack2k9.antiviabedrock.detector;
 
-import me.khangios.antiviabedrock.AntiViaBedrockPlugin;
-import me.khangios.antiviabedrock.config.ConfigManager;
-import me.khangios.antiviabedrock.util.Fnv1;
+import me.tiack2k9.antiviabedrock.AntiViaBedrockPlugin;
+import me.tiack2k9.antiviabedrock.config.ConfigManager;
+import me.tiack2k9.antiviabedrock.util.Fnv1;
 import org.geysermc.api.util.BedrockPlatform;
 import org.geysermc.floodgate.api.FloodgateApi;
 import org.geysermc.floodgate.api.player.FloodgatePlayer;
@@ -16,7 +16,7 @@ import java.util.UUID;
 /**
  * Trình phân tích và phát hiện các dấu hiệu giả mạo Bedrock của ViaBedrock / ViaFabricPlus.
  * 
- * @author khangios
+ * @author tiack2k9
  */
 public class ViaBedrockDetector {
 
@@ -77,7 +77,7 @@ public class ViaBedrockDetector {
                 if (os != null && (os == DeviceOs.WIN32 || os.name().equalsIgnoreCase("WIN32") || os.ordinal() == 8)) {
                     return DetectionResult.flagged(
                         DetectionType.DEVICE_OS_WIN32,
-                        "DeviceOS là WIN32 (ID 8) thay vì UWP/Windows 10 chính thức (ID 7)"
+                        "DeviceOS is WIN32 (ID 8), instead of the official UWP/Windows 10 value (ID 7)."
                     );
                 }
             }
@@ -89,7 +89,7 @@ public class ViaBedrockDetector {
                     if (Fnv1.matchesViaBedrockFakeXuid(username, xuid)) {
                         return DetectionResult.flagged(
                             DetectionType.FAKE_FNV1_XUID,
-                            "XUID (" + xuid + ") khớp chính xác mã băm FNV1-64 offline của ViaBedrock"
+                            "XUID (" + xuid + ") Exact match with ViaBedrock’s offline FNV1-64 hash."
                         );
                     }
                 }
@@ -101,13 +101,13 @@ public class ViaBedrockDetector {
                 if (model != null && (model.equalsIgnoreCase(VIABEDROCK_DEVICE_MODEL_SIGNATURE) || model.contains(VIABEDROCK_DEVICE_MODEL_KEYWORD))) {
                     return DetectionResult.flagged(
                         DetectionType.DEVICE_MODEL,
-                        "DeviceModel trùng khớp chuỗi ViaBedrock: \"" + model + "\""
+                        "DeviceModel matches a ViaBedrock-specific string.: \"" + model + "\""
                     );
                 }
             }
 
         } catch (Throwable t) {
-            plugin.getLogger().warning("Lỗi khi kiểm tra Floodgate cho " + username + ": " + t.getMessage());
+            plugin.getLogger().warning("Error checking Floodgate for this player." + username + ": " + t.getMessage());
         }
 
         return DetectionResult.clean();
@@ -130,7 +130,7 @@ public class ViaBedrockDetector {
                 if (platform != null && (platform == BedrockPlatform.WIN32 || platform.name().equalsIgnoreCase("WIN32"))) {
                     return DetectionResult.flagged(
                         DetectionType.DEVICE_OS_WIN32,
-                        "Nền tảng BedrockPlatform là WIN32 (Giả lập bởi ViaBedrock)"
+                        "Bedrock platform is WIN32 (emulated by ViaBedrock)."
                     );
                 }
             }
@@ -142,7 +142,7 @@ public class ViaBedrockDetector {
                     if (Fnv1.matchesViaBedrockFakeXuid(username, xuid)) {
                         return DetectionResult.flagged(
                             DetectionType.FAKE_FNV1_XUID,
-                            "XUID (" + xuid + ") khớp chính xác FNV1 hash offline của ViaBedrock"
+                            "XUID (" + xuid + ") Exact match with ViaBedrock’s offline FNV1 hash."
                         );
                     }
                 }
@@ -155,7 +155,7 @@ public class ViaBedrockDetector {
                     if (clientData.deviceModel.equalsIgnoreCase(VIABEDROCK_DEVICE_MODEL_SIGNATURE) || clientData.deviceModel.contains(VIABEDROCK_DEVICE_MODEL_KEYWORD)) {
                         return DetectionResult.flagged(
                             DetectionType.DEVICE_MODEL,
-                            "DeviceModel trùng khớp ViaBedrock: \"" + clientData.deviceModel + "\""
+                            "DeviceModel matches ViaBedrock: \"" + clientData.deviceModel + "\""
                         );
                     }
                 }
@@ -170,13 +170,13 @@ public class ViaBedrockDetector {
                 if (cfg.isCheckGuiScale() && clientData.guiScale == -1) {
                     return DetectionResult.flagged(
                         DetectionType.GUI_SCALE_MINUS_ONE,
-                        "GuiScale = -1 (Giá trị bất thường hardcoded của ViaBedrock)"
+                        "GuiScale = -1 (Unusual hardcoded ViaBedrock value.)"
                     );
                 }
             }
 
         } catch (Throwable t) {
-            plugin.getLogger().warning("Lỗi khi kiểm tra Geyser cho " + username + ": " + t.getMessage());
+            plugin.getLogger().warning("Error checking Geyser for this player " + username + ": " + t.getMessage());
         }
 
         return DetectionResult.clean();

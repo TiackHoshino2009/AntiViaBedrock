@@ -1,9 +1,9 @@
-package me.khangios.antiviabedrock.command;
+package me.tiack2k9.antiviabedrock.command;
 
-import me.khangios.antiviabedrock.AntiViaBedrockPlugin;
-import me.khangios.antiviabedrock.detector.ViaBedrockDetector;
-import me.khangios.antiviabedrock.storage.PlayerViolation;
-import me.khangios.antiviabedrock.util.ColorUtil;
+import me.tiack2k9.antiviabedrock.AntiViaBedrockPlugin;
+import me.tiack2k9.antiviabedrock.detector.ViaBedrockDetector;
+import me.tiack2k9.antiviabedrock.storage.PlayerViolation;
+import me.tiack2k9.antiviabedrock.util.ColorUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -21,7 +21,7 @@ import java.util.*;
 /**
  * Lệnh quản trị /antiviabedrock (alias: /avb).
  * 
- * @author khangios
+ * @author tiack2k9
  */
 public class AntiViaBedrockCommand implements CommandExecutor, TabCompleter {
 
@@ -35,7 +35,7 @@ public class AntiViaBedrockCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("antiviabedrock.admin")) {
-            sender.sendMessage(ColorUtil.color("&cBạn không có quyền sử dụng lệnh này (&eantiviabedrock.admin&c)."));
+            sender.sendMessage(ColorUtil.color("&cYou do not have permission to use this command. (&eantiviabedrock.admin&c)."));
             return true;
         }
 
@@ -50,18 +50,18 @@ public class AntiViaBedrockCommand implements CommandExecutor, TabCompleter {
             case "reload" -> {
                 plugin.getConfigManager().load();
                 plugin.getDatabaseManager().load();
-                sender.sendMessage(ColorUtil.color("&a[AntiViaBedrock] Đã nạp lại cấu hình config.yml và data.yml thành công!"));
+                sender.sendMessage(ColorUtil.color("&a[AntiViaBedrock] Successfully reloaded config.yml and data.yml.!"));
                 return true;
             }
 
             case "check" -> {
                 if (args.length < 2) {
-                    sender.sendMessage(ColorUtil.color("&cVui lòng nhập tên người chơi: &e/" + label + " check <player>"));
+                    sender.sendMessage(ColorUtil.color("&cPlease enter a player name: &e/" + label + " check <player>"));
                     return true;
                 }
                 Player target = Bukkit.getPlayer(args[1]);
                 if (target == null) {
-                    sender.sendMessage(ColorUtil.color("&cNgười chơi &e" + args[1] + " &ckhông online."));
+                    sender.sendMessage(ColorUtil.color("&cPlayer &e" + args[1] + " &cNot Online."));
                     return true;
                 }
                 checkPlayerInfo(sender, target);
@@ -70,7 +70,7 @@ public class AntiViaBedrockCommand implements CommandExecutor, TabCompleter {
 
             case "reset" -> {
                 if (args.length < 2) {
-                    sender.sendMessage(ColorUtil.color("&cVui lòng nhập tên người chơi: &e/" + label + " reset <player>"));
+                    sender.sendMessage(ColorUtil.color("&cPlease enter a player name: &e/" + label + " reset <player>"));
                     return true;
                 }
                 Player target = Bukkit.getPlayer(args[1]);
@@ -86,9 +86,9 @@ public class AntiViaBedrockCommand implements CommandExecutor, TabCompleter {
                 }
 
                 if (targetUuid != null && plugin.getDatabaseManager().resetViolation(targetUuid)) {
-                    sender.sendMessage(ColorUtil.color("&a[AntiViaBedrock] Đã xóa lịch sử vi phạm của &e" + args[1]));
+                    sender.sendMessage(ColorUtil.color("&a[AntiViaBedrock] Violation history cleared for &e" + args[1]));
                 } else {
-                    sender.sendMessage(ColorUtil.color("&cKhông tìm thấy dữ liệu vi phạm của &e" + args[1]));
+                    sender.sendMessage(ColorUtil.color("&cNo violation data found for &e" + args[1]));
                 }
                 return true;
             }
@@ -96,16 +96,16 @@ public class AntiViaBedrockCommand implements CommandExecutor, TabCompleter {
             case "list" -> {
                 Map<UUID, PlayerViolation> all = plugin.getDatabaseManager().getAllViolations();
                 if (all.isEmpty()) {
-                    sender.sendMessage(ColorUtil.color("&a[AntiViaBedrock] Hiện tại không có người chơi nào bị ghi nhận vi phạm."));
+                    sender.sendMessage(ColorUtil.color("&a[AntiViaBedrock] No players currently have recorded violations."));
                     return true;
                 }
 
                 sender.sendMessage(ColorUtil.color("&8&m----------------------------------------"));
-                sender.sendMessage(ColorUtil.color("&6&lDANH SÁCH VI PHẠM ANTIVIABEDROCK &7(" + all.size() + " mục):"));
+                sender.sendMessage(ColorUtil.color("&6&lANTIVIABEDROCK VIOLATION LIST &7(" + all.size() + " mục):"));
                 for (PlayerViolation pv : all.values()) {
                     String status = pv.isBanned() ? "&c[BANNED]" : "&e[WARNING]";
                     sender.sendMessage(ColorUtil.color(String.format(
-                        "&7- %s &f%s &7| Vi phạm: &c%d &7| Lần cuối: &e%s &7| Lý do: &f%s",
+                        "&7- %s &f%s &7| violations: &c%d &7| Last seen: &e%s &7| Reason: &f%s",
                         status, pv.getName(), pv.getViolations(),
                         dateFormat.format(new Date(pv.getLastViolation())),
                         pv.getLastReason()
@@ -124,7 +124,7 @@ public class AntiViaBedrockCommand implements CommandExecutor, TabCompleter {
 
     private void checkPlayerInfo(CommandSender sender, Player target) {
         sender.sendMessage(ColorUtil.color("&8&m----------------------------------------"));
-        sender.sendMessage(ColorUtil.color("&6&lTHÔNG TIN CLIENT CỦA: &e" + target.getName()));
+        sender.sendMessage(ColorUtil.color("&6&lCLIENT INFORMATION FOR: &e" + target.getName()));
         sender.sendMessage(ColorUtil.color("&7UUID: &f" + target.getUniqueId()));
         sender.sendMessage(ColorUtil.color("&7IP: &f" + (target.getAddress() != null ? target.getAddress().getAddress().getHostAddress() : "N/A")));
         sender.sendMessage(ColorUtil.color("&7Client Brand: &f" + target.getClientBrandName()));
@@ -159,15 +159,15 @@ public class AntiViaBedrockCommand implements CommandExecutor, TabCompleter {
         }
 
         if (!isBedrock) {
-            sender.sendMessage(ColorUtil.color("&7Loại kết nối: &aJava Client"));
+            sender.sendMessage(ColorUtil.color("&7Connection type: &aJava Client"));
         }
 
         PlayerViolation pv = plugin.getDatabaseManager().getViolation(target.getUniqueId());
         if (pv != null) {
-            sender.sendMessage(ColorUtil.color("&7Số lần vi phạm: &c" + pv.getViolations() + (pv.isBanned() ? " &4(BANNED)" : "")));
-            sender.sendMessage(ColorUtil.color("&7Lý do vi phạm gần nhất: &f" + pv.getLastReason()));
+            sender.sendMessage(ColorUtil.color("&7**Number of violations**: &c" + pv.getViolations() + (pv.isBanned() ? " &4(BANNED)" : "")));
+            sender.sendMessage(ColorUtil.color("&7Most recent violation reason: &f" + pv.getLastReason()));
         } else {
-            sender.sendMessage(ColorUtil.color("&7Hồ sơ vi phạm: &aTrong sạch (0 vi phạm)"));
+            sender.sendMessage(ColorUtil.color("&7Violation status: &aClean (0)"));
         }
 
         sender.sendMessage(ColorUtil.color("&8&m----------------------------------------"));
@@ -175,11 +175,11 @@ public class AntiViaBedrockCommand implements CommandExecutor, TabCompleter {
 
     private void sendHelp(CommandSender sender, String label) {
         sender.sendMessage(ColorUtil.color("&8&m----------------------------------------"));
-        sender.sendMessage(ColorUtil.color("&6&lAntiViaBedrock &7v" + plugin.getDescription().getVersion() + " &eby khangios"));
-        sender.sendMessage(ColorUtil.color("&e/" + label + " reload &7- Nạp lại config.yml và data.yml"));
-        sender.sendMessage(ColorUtil.color("&e/" + label + " check <player> &7- Kiểm tra client & phần cứng người chơi"));
-        sender.sendMessage(ColorUtil.color("&e/" + label + " reset <player> &7- Xóa vi phạm / ân xá cho người chơi"));
-        sender.sendMessage(ColorUtil.color("&e/" + label + " list &7- Xem danh sách người chơi bị ghi nhận vi phạm"));
+        sender.sendMessage(ColorUtil.color("&6&lAntiViaBedrock &7v" + plugin.getDescription().getVersion() + " &eby Tiack"));
+        sender.sendMessage(ColorUtil.color("&e/" + label + " reload &7- Reload config.yml and data.yml"));
+        sender.sendMessage(ColorUtil.color("&e/" + label + " check <player> &7- Check players clients and hardware"));
+        sender.sendMessage(ColorUtil.color("&e/" + label + " reset <player> &7- Clear a player’s violations / pardon them"));
+        sender.sendMessage(ColorUtil.color("&e/" + label + " list &7- View the list of players with recorded violations"));
         sender.sendMessage(ColorUtil.color("&8&m----------------------------------------"));
     }
 

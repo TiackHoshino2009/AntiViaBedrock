@@ -1,4 +1,4 @@
-package me.khangios.antiviabedrock.util;
+package me.tiack2k9.antiviabedrock.util;
 
 import java.nio.charset.StandardCharsets;
 
@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
  * Dùng để kiểm tra XUID giả mạo được tạo tự động bởi ViaBedrock khi người chơi
  * kết nối ở chế độ tự ký (self-signed/offline).
  * 
- * @author khangios
+ * @author tiack2k9
  */
 public final class Fnv1 {
 

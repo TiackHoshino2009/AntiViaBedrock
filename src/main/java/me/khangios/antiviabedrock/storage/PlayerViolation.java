@@ -1,11 +1,11 @@
-package me.khangios.antiviabedrock.storage;
+package me.tiack2k9.antiviabedrock.storage;
 
 import java.util.UUID;
 
 /**
  * Lưu trữ thông tin vi phạm của người chơi.
  * 
- * @author khangios
+ * @author tiack2k9
  */
 public class PlayerViolation {
 

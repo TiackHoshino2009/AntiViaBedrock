@@ -1,6 +1,6 @@
-package me.khangios.antiviabedrock.storage;
+package me.tiack2k9.antiviabedrock.storage;
 
-import me.khangios.antiviabedrock.AntiViaBedrockPlugin;
+import me.tiack2k9.antiviabedrock.AntiViaBedrockPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -15,7 +15,7 @@ import java.util.logging.Level;
 /**
  * Quản lý cơ sở dữ liệu vi phạm của người chơi (lưu trữ trong data.yml).
  * 
- * @author khangios
+ * @author tiack2k9
  */
 public class DatabaseManager {
 
@@ -53,10 +53,10 @@ public class DatabaseManager {
 
                 violations.put(uuid, new PlayerViolation(uuid, name, ip, count, first, last, reason, banned));
             } catch (Exception e) {
-                plugin.getLogger().log(Level.WARNING, "Không thể nạp dữ liệu người chơi " + key, e);
+                plugin.getLogger().log(Level.WARNING, "Failed to load player data. " + key, e);
             }
         }
-        plugin.getLogger().info("Đã nạp " + violations.size() + " hồ sơ vi phạm từ data.yml.");
+        plugin.getLogger().info("Reloading " + violations.size() + " Violation profile loaded from data.yml.");
     }
 
     public void save(boolean async) {
@@ -78,7 +78,7 @@ public class DatabaseManager {
                 try {
                     config.save(dataFile);
                 } catch (IOException e) {
-                    plugin.getLogger().log(Level.SEVERE, "Lỗi khi lưu data.yml!", e);
+                    plugin.getLogger().log(Level.SEVERE, "Error saving data.yml!", e);
                 }
             }
         };

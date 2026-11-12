@@ -1,7 +1,7 @@
-package me.khangios.antiviabedrock.detector;
+package me.tiack2k9.antiviabedrock.detector;
 
-import me.khangios.antiviabedrock.AntiViaBedrockPlugin;
-import me.khangios.antiviabedrock.config.ConfigManager;
+import me.tiack2k9.antiviabedrock.AntiViaBedrockPlugin;
+import me.tiack2k9.antiviabedrock.config.ConfigManager;
 import org.bukkit.entity.Player;
 
 import java.util.Locale;
@@ -10,7 +10,7 @@ import java.util.Locale;
  * Trình phát hiện người chơi sử dụng ViaFabricPlus khi kết nối qua cổng Java
  * hoặc thông qua các kênh tin nhắn plugin đặc trưng.
  * 
- * @author khangios
+ * @author tiack2k9
  */
 public class ViaFabricPlusJavaDetector {
 
@@ -40,7 +40,7 @@ public class ViaFabricPlusJavaDetector {
                     if (lowerBrand.contains(blocked.toLowerCase(Locale.ROOT))) {
                         return DetectionResult.flagged(
                             DetectionType.JAVA_BLOCKED_BRAND,
-                            "Client Brand bị chặn: \"" + brand + "\" (Khớp với: " + blocked + ")"
+                            "Client Brand Blocked: \"" + brand + "\" (Matched: " + blocked + ")"
                         );
                     }
                 }
@@ -62,7 +62,7 @@ public class ViaFabricPlusJavaDetector {
         if (channel.equalsIgnoreCase(VIABEDROCK_CONFIRM_CHANNEL) || channel.equalsIgnoreCase(VIABEDROCK_DATA_CHANNEL)) {
             return DetectionResult.flagged(
                 DetectionType.VIABEDROCK_CHANNEL,
-                "Phát hiện kênh giao tiếp độc quyền của ViaBedrock: " + channel
+                "ViaBedrock-specific communication channel detected: " + channel
             );
         }
 

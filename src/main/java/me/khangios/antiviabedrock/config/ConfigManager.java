@@ -1,7 +1,7 @@
-package me.khangios.antiviabedrock.config;
+package me.tiack2k9.antiviabedrock.config;
 
-import me.khangios.antiviabedrock.AntiViaBedrockPlugin;
-import me.khangios.antiviabedrock.util.ColorUtil;
+import me.tiack2k9.antiviabedrock.AntiViaBedrockPlugin;
+import me.tiack2k9.antiviabedrock.util.ColorUtil;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Quản lý cấu hình plugin từ config.yml.
  * 
- * @author khangios
+ * @author tiack2k9
  */
 public class ConfigManager {
 

@@ -1,9 +1,9 @@
-package me.khangios.antiviabedrock.detector;
+package me.tiack2k9.antiviabedrock.detector;
 
 /**
  * Loại phát hiện vi phạm ViaBedrock hoặc ViaFabricPlus.
  * 
- * @author khangios
+ * @author tiack2k9
  */
 public enum DetectionType {
     DEVICE_MODEL("ViaBedrock Hardcoded Device Model (MS-7E51)"),

@@ -1,10 +1,10 @@
-package me.khangios.antiviabedrock.listener;
+package me.tiack2k9.antiviabedrock.listener;
 
-import me.khangios.antiviabedrock.AntiViaBedrockPlugin;
-import me.khangios.antiviabedrock.detector.DetectionResult;
-import me.khangios.antiviabedrock.detector.ViaBedrockDetector;
-import me.khangios.antiviabedrock.detector.ViaFabricPlusJavaDetector;
-import me.khangios.antiviabedrock.punishment.PunishmentManager;
+import me.tiack2k9.antiviabedrock.AntiViaBedrockPlugin;
+import me.tiack2k9.antiviabedrock.detector.DetectionResult;
+import me.tiack2k9.antiviabedrock.detector.ViaBedrockDetector;
+import me.tiack2k9.antiviabedrock.detector.ViaFabricPlusJavaDetector;
+import me.tiack2k9.antiviabedrock.punishment.PunishmentManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,7 +20,7 @@ import java.util.UUID;
 /**
  * Lắng nghe các sự kiện kết nối của người chơi để phát hiện và xử phạt.
  * 
- * @author khangios
+ * @author tiack2k9
  */
 public class PlayerLoginListener implements Listener, PluginMessageListener {
 

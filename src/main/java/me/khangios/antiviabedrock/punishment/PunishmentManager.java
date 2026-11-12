@@ -1,11 +1,11 @@
-package me.khangios.antiviabedrock.punishment;
+package me.tiack2k9.antiviabedrock.punishment;
 
-import me.khangios.antiviabedrock.AntiViaBedrockPlugin;
-import me.khangios.antiviabedrock.config.ConfigManager;
-import me.khangios.antiviabedrock.detector.DetectionResult;
-import me.khangios.antiviabedrock.storage.DatabaseManager;
-import me.khangios.antiviabedrock.storage.PlayerViolation;
-import me.khangios.antiviabedrock.util.ColorUtil;
+import me.tiack2k9.antiviabedrock.AntiViaBedrockPlugin;
+import me.tiack2k9.antiviabedrock.config.ConfigManager;
+import me.tiack2k9.antiviabedrock.detector.DetectionResult;
+import me.tiack2k9.antiviabedrock.storage.DatabaseManager;
+import me.tiack2k9.antiviabedrock.storage.PlayerViolation;
+import me.tiack2k9.antiviabedrock.util.ColorUtil;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -24,7 +24,7 @@ import java.util.logging.Level;
  * - Lần 1: Kick với thông báo yêu cầu dùng bản Bedrock chính thức.
  * - Lần 2: Ban khỏi máy chủ.
  * 
- * @author khangios
+ * @author tiack2k9
  */
 public class PunishmentManager {
 
@@ -50,7 +50,7 @@ public class PunishmentManager {
         // Gửi log console
         if (cfg.isLogToConsole()) {
             plugin.getLogger().warning(String.format(
-                "[PHÁT HIỆN] Người chơi %s (%s) vi phạm lần %d: %s [%s] -> Hành động: %s",
+                "[DETECTED] Player %s (%s) triggered violation #%d: %s [%s] → Action: %s",
                 name, uuid, violations, result.type().name(), result.details(), actionName
             ));
         }
@@ -107,7 +107,7 @@ public class PunishmentManager {
                         Bukkit.getBanList(BanList.Type.IP).addBan(ip, reason, null, "AntiViaBedrock");
                     }
                 } catch (Throwable t) {
-                    plugin.getLogger().log(Level.SEVERE, "Lỗi khi thực thi ban người chơi " + name, t);
+                    plugin.getLogger().log(Level.SEVERE, "Failed to ban the player." + name, t);
                 }
             });
         }
@@ -145,11 +145,11 @@ public class PunishmentManager {
                 conn.setDoOutput(true);
 
                 String json = String.format(
-                    "{\"embeds\":[{\"title\":\"🚨 AntiViaBedrock Phát Hiện Nghi Vấn\",\"color\":%d,\"fields\":[" +
-                    "{\"name\":\"Người chơi\",\"value\":\"%s (%s)\",\"inline\":true}," +
-                    "{\"name\":\"Hành động\",\"value\":\"%s (Lần %d)\",\"inline\":true}," +
-                    "{\"name\":\"Phương thức\",\"value\":\"%s\",\"inline\":false}," +
-                    "{\"name\":\"Chi tiết\",\"value\":\"%s\",\"inline\":false}" +
+                    "{\"embeds\":[{\"title\":\"🚨 ViaBedRock Detected\",\"color\":%d,\"fields\":[" +
+                    "{\"name\":\"Player\",\"value\":\"%s (%s)\",\"inline\":true}," +
+                    "{\"name\":\"Action\",\"value\":\"%s (Lần %d)\",\"inline\":true}," +
+                    "{\"name\":\"Methood\",\"value\":\"%s\",\"inline\":false}," +
+                    "{\"name\":\"Details\",\"value\":\"%s\",\"inline\":false}" +
                     "]}]}",
                     action.equals("BAN") ? 16711680 : 16776960,
                     escapeJson(name),

@@ -1,12 +1,12 @@
-package me.khangios.antiviabedrock;
+package me.tiack2k9.antiviabedrock;
 
-import me.khangios.antiviabedrock.command.AntiViaBedrockCommand;
-import me.khangios.antiviabedrock.config.ConfigManager;
-import me.khangios.antiviabedrock.detector.ViaBedrockDetector;
-import me.khangios.antiviabedrock.detector.ViaFabricPlusJavaDetector;
-import me.khangios.antiviabedrock.listener.PlayerLoginListener;
-import me.khangios.antiviabedrock.punishment.PunishmentManager;
-import me.khangios.antiviabedrock.storage.DatabaseManager;
+import me.tiack2k9.antiviabedrock.command.AntiViaBedrockCommand;
+import me.tiack2k9.antiviabedrock.config.ConfigManager;
+import me.tiack2k9.antiviabedrock.detector.ViaBedrockDetector;
+import me.tiack2k9.antiviabedrock.detector.ViaFabricPlusJavaDetector;
+import me.tiack2k9.antiviabedrock.listener.PlayerLoginListener;
+import me.tiack2k9.antiviabedrock.punishment.PunishmentManager;
+import me.tiack2k9.antiviabedrock.storage.DatabaseManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -15,7 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  * Chặn người chơi sử dụng ViaFabricPlus / ViaBedrock để giả lập Bedrock vượt qua anti-cheat.
  * Tương thích Leaf / Paper 1.21.1+
  * 
- * @author khangios
+ * @author tiack2k9
  */
 public class AntiViaBedrockPlugin extends JavaPlugin {
 
@@ -67,7 +67,7 @@ public class AntiViaBedrockPlugin extends JavaPlugin {
             getCommand("antiviabedrock").setTabCompleter(cmd);
         }
 
-        getLogger().info("AntiViaBedrock v" + getDescription().getVersion() + " đã kích hoạt thành công!");
+        getLogger().info("AntiViaBedrock v" + getDescription().getVersion() + " Successfully enabled!");
     }
 
     @Override
@@ -75,7 +75,7 @@ public class AntiViaBedrockPlugin extends JavaPlugin {
         if (this.databaseManager != null) {
             this.databaseManager.save(false);
         }
-        getLogger().info("AntiViaBedrock đã tắt và lưu trữ dữ liệu an toàn.");
+        getLogger().info("AntiViaBedRock has been disabled, and its data has been saved safely.");
     }
 
     private void checkDependencies() {
@@ -94,13 +94,13 @@ public class AntiViaBedrockPlugin extends JavaPlugin {
         }
 
         if (this.floodgateAvailable) {
-            getLogger().info("[Hook] Đã tìm thấy và kết nối với Floodgate API thành công!");
+            getLogger().info("[Hook] Successfully found and connected to the Floodgate API!");
         } else {
-            getLogger().warning("[Hook] Không tìm thấy Floodgate plugin trên server (Có thể đang chạy proxy hoặc Geyser độc lập).");
+            getLogger().warning("[Hook] Floodgate plugin not found on the server. You may be running Geyser in standalone mode or behind a proxy.");
         }
 
         if (this.geyserAvailable) {
-            getLogger().info("[Hook] Đã tìm thấy và kết nối với Geyser-Spigot API thành công!");
+            getLogger().info("[Hook] **Geyser-Spigot API found and connected successfully!**");
         }
     }
 
@@ -111,8 +111,8 @@ public class AntiViaBedrockPlugin extends JavaPlugin {
         getLogger().info("  / _ \\ | '_ \\| __| | |\\ \\ / /| |/ _` |  _ \\ / _ \\/ _` | '__/ _ \\ / __| |/ /");
         getLogger().info(" / ___ \\| | | | |_| | | \\ V / | | (_| | |_) |  __/ (_| | | | (_) | (__|   < ");
         getLogger().info("/_/   \\_\\_| |_|\\__|_|_|  \\_/  |_|\\__,_|____/ \\___|\\__,_|_|  \\___/ \\___|_|\\_\\");
-        getLogger().info("   Anti-ViaBedrock & Anti-ViaFabricPlus Protection by khangios");
-        getLogger().info("   Phiên bản: " + getDescription().getVersion() + " | Dành cho: Leaf 1.21.11");
+        getLogger().info("   Anti-ViaBedrock & Anti-ViaFabricPlus Protection by Tiack");
+        getLogger().info("   Verstion: " + getDescription().getVersion() + " | Paper 1.21.11");
         getLogger().info("======================================================");
     }
 

@@ -23,12 +23,11 @@ detection:
 
 # ViaFabricPlus detection features when joining directly through the Java port
 java-detection:
-# Checks the client brand if the player sends a Fabric/ViaFabricPlus brand
+# Checks the client brand if the player sends a ViaFabricPlus brand
   check-client-brand: true
   # List of banned brand keywords
   blocked-brands:
     - "viafabricplus"
-    - "fabric"
 
 # Violation handling system:
 # - First offense: Kick with a message asking the player to use the official Bedrock version
